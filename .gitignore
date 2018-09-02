@@ -6,8 +6,8 @@
 # dependencies
 /node_modules
 /functions/node_modules
-#	/*.txt
-#	/*.csv
+/functions/*.txt
+/functions/*.csv
 
 # testing
 /coverage

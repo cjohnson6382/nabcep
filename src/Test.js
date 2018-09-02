@@ -66,11 +66,11 @@ const Test = ({ title }) => {
 	}
 	
 	return (
-		<div style={ { display: "flex", flexDirection: "column" } } >
+		<div style={ { display: "flex", flexDirection: "column", background: "transparent" } } >
 			<h3 style={ { background: "#f8981d", padding: "0.5em", margin: "0 4em 0 4em" } } >{ title }</h3>
 			<div style={ { display: "flex", flexDirection: "row" } } >
-				<div style={ { padding: "1em", flex: 3 } } ><Table { ...props } /></div>
-				<div style={ { padding: "1em", flex: 2 } } ><Form { ...formProps } /></div>
+				<div style={ { padding: "2em", flex: 3 } } ><Table { ...props } /></div>
+				<div style={ { padding: "2em", flex: 2 } } ><Form { ...formProps } /></div>
 			</div>
 			<div><Uploader { ...uploaderProps } /></div>
 		</div>

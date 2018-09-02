@@ -76,7 +76,7 @@ export default class Uploader extends React.Component {
 		const { files, uploaded } = this.state
 		
 		return (
-			<div style={ { display: "flex", flexDirection: "column" } } >
+			<div style={ { display: "flex", flexDirection: "column", background: "transparent" } } >
 				<div style={ { padding: "2em" } } >
 					<div onDrop={ drop } onDragOver={ dragover } style={ { zIndex: 5, background: "transparent", padding: "3em", border: "3px dashed black", borderRadius: "0.5em", margin: "1em" } } >
 						<div style={ { padding: "2em", fontWeight: "bold" } } >Drag and Drop Files to this Box to Upload Them</div>

@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form renders 1`] = `
+<div
+  style={
+    Object {
+      "background": "#e5e5e5",
+    }
+  }
+>
+  <h3
+    style={
+      Object {
+        "background": "linear-gradient(#b4b4b4, #cacaca, #b4b4b4)",
+        "padding": "1em",
+      }
+    }
+  >
+    test form
+  </h3>
+  <form
+    onSubmit={[Function]}
+    style={
+      Object {
+        "padding": "1em",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "alignItems": "center",
+          "display": "flex",
+          "flexDirection": "row",
+          "padding": "1em 1em 1em 1em",
+        }
+      }
+    >
+      <label
+        style={
+          Object {
+            "alignItems": "center",
+            "display": "flex",
+            "padding": "0 0.5em 0 0",
+          }
+        }
+      >
+        field1
+      </label>
+      <input
+        onChange={undefined}
+        type="text"
+      />
+    </div>
+    <div
+      style={
+        Object {
+          "alignItems": "center",
+          "display": "flex",
+          "flexDirection": "row",
+          "padding": "1em 1em 1em 1em",
+        }
+      }
+    >
+      <label
+        style={
+          Object {
+            "alignItems": "center",
+            "display": "flex",
+            "padding": "0 0.5em 0 0",
+          }
+        }
+      >
+        field2
+      </label>
+      <div>
+        <div
+          style={
+            Object {
+              "alignItems": "center",
+              "display": "flex",
+              "flexDirection": "row",
+            }
+          }
+        >
+          <input
+            name={undefined}
+            onChange={undefined}
+            type="radio"
+            value="first"
+          />
+          <div
+            style={
+              Object {
+                "padding": "0 0 0 1em",
+              }
+            }
+          >
+            first
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "alignItems": "center",
+              "display": "flex",
+              "flexDirection": "row",
+            }
+          }
+        >
+          <input
+            name={undefined}
+            onChange={undefined}
+            type="radio"
+            value="second"
+          />
+          <div
+            style={
+              Object {
+                "padding": "0 0 0 1em",
+              }
+            }
+          >
+            second
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "alignItems": "center",
+          "display": "flex",
+          "flexDirection": "row",
+          "padding": "1em 1em 1em 1em",
+        }
+      }
+    >
+      <label
+        style={
+          Object {
+            "alignItems": "center",
+            "display": "flex",
+            "padding": "0 0.5em 0 0",
+          }
+        }
+      >
+        field3
+      </label>
+      <select
+        onChange={undefined}
+      >
+        <option
+          value="first"
+        >
+          option1
+        </option>
+        <option
+          value="second"
+        >
+          option2
+        </option>
+      </select>
+    </div>
+    <input
+      style={
+        Object {
+          "background": "linear-gradient(#3979d2, #154c94)",
+          "borders": "none",
+          "color": "white",
+          "padding": "0.3em",
+        }
+      }
+      type="submit"
+      value="submit"
+    />
+  </form>
+</div>
+`;

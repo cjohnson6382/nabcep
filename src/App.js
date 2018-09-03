@@ -13,8 +13,7 @@ class App extends React.Component {
 			<BrowserRouter>
 				<div style={ { backgroundImage: "url(./background.jpg)", backgroundSize: "cover", padding: "3em" } } className="App">
 					<Header />
-					<Route exact path="/" render={ routeProps => <Test title="Test Page Title" { ...routeProps } /> } />
-					<Route exact path="/test" render={ routeProps => <Test title="Test Page Title" { ...routeProps } /> } />
+					<Route exact path="/" render={ routeProps => <Test title="DASHBOARD" { ...routeProps } /> } />
 					<Footer />
 				</div>
 			</BrowserRouter>

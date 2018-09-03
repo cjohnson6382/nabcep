@@ -30,7 +30,7 @@ const Test = ({ title }) => {
 	
 	const props = {
 		auth: {},
-		title: "Demo Table",
+		title: "Demo Table (striped, hover, click 'Name Label' to sort)",
 		titleStyle: {
 			background: "linear-gradient(#b4b4b4, #cacaca)",
 			padding: "1em"
@@ -159,7 +159,7 @@ const Test = ({ title }) => {
 	
 	return (
 		<div style={ { border: "0.1em solid #ff8a19", display: "flex", flexDirection: "column", background: "transparent" } } >
-			<h3 style={ { borderLeft: "0.5em solid #f05401", background: "#f8981d", padding: "0.5em", margin: "0 4em 0 4em" } } >{ title }</h3>
+			<h3 style={ { fontWeight: "bold", borderLeft: "0.5em solid #f05401", background: "#f8981d", padding: "0.5em", margin: "0 4em 0 4em" } } >{ title }</h3>
 			<div style={ { display: "flex", flexDirection: "row" } } >
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...props } /></div>
 				<div style={ { padding: "2em", flex: 2 } } ><Form { ...formProps } /></div>

@@ -59,6 +59,98 @@ const Test = ({ title }) => {
 		]
 	}
 	
+	const table2props = {
+		auth: {},
+		title: "No Hover Table",
+		titleStyle: {
+			background: "linear-gradient(#b4b4b4, #cacaca)",
+			padding: "1em"
+		},
+		bodyStyle: {
+			background: "#e5e5e5"
+		},
+		query: {
+			table: "test",
+			options: {
+				orderBy: [
+					"name",
+					"desc"
+				]
+			}
+		},
+		keyField: "name",
+		features: {
+			striped: true
+		},
+		columns: [
+			{ dataField: "name", text: "The Name Label", sort: true, events: { onClick: e => console.log("clicked on name field", e.target.value) } },
+			{ dataField: "thing", text: "The Thing Label" },
+			{ dataField: "datum", text: "The Datum Label" },
+		]
+	}
+	
+	const table3props = {
+		auth: {},
+		title: "Not Striped Table",
+		titleStyle: {
+			background: "linear-gradient(#b4b4b4, #cacaca)",
+			padding: "1em"
+		},
+		bodyStyle: {
+			background: "#e5e5e5"
+		},
+		query: {
+			table: "test",
+			options: {
+				orderBy: [
+					"name",
+					"desc"
+				]
+			}
+		},
+		keyField: "name",
+		features: {
+			hover: true
+		},
+		columns: [
+			{ dataField: "name", text: "The Name Label", sort: true, events: { onClick: e => console.log("clicked on name field", e.target.value) } },
+			{ dataField: "thing", text: "The Thing Label" },
+			{ dataField: "datum", text: "The Datum Label" },
+		]
+	}
+	
+	const table4props = {
+		auth: {},
+		title: "Paginated Table",
+		titleStyle: {
+			background: "linear-gradient(#b4b4b4, #cacaca)",
+			padding: "1em"
+		},
+		bodyStyle: {
+			background: "#e5e5e5"
+		},
+		query: {
+			table: "test",
+			options: {
+				orderBy: [
+					"name",
+					"desc"
+				]
+			}
+		},
+		keyField: "name",
+		features: {
+			striped: true,
+			hover: true,
+			pagination: true
+		},
+		columns: [
+			{ dataField: "name", text: "The Name Label", sort: true, events: { onClick: e => console.log("clicked on name field", e.target.value) } },
+			{ dataField: "thing", text: "The Thing Label" },
+			{ dataField: "datum", text: "The Datum Label" },
+		]
+	}
+	
 	const uploaderProps = {
 		auth: {},
 		type: "test",
@@ -66,11 +158,16 @@ const Test = ({ title }) => {
 	}
 	
 	return (
-		<div style={ { display: "flex", flexDirection: "column", background: "transparent" } } >
-			<h3 style={ { background: "#f8981d", padding: "0.5em", margin: "0 4em 0 4em" } } >{ title }</h3>
+		<div style={ { border: "0.1em solid #ff8a19", display: "flex", flexDirection: "column", background: "transparent" } } >
+			<h3 style={ { borderLeft: "0.5em solid #f05401", background: "#f8981d", padding: "0.5em", margin: "0 4em 0 4em" } } >{ title }</h3>
 			<div style={ { display: "flex", flexDirection: "row" } } >
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...props } /></div>
 				<div style={ { padding: "2em", flex: 2 } } ><Form { ...formProps } /></div>
+			</div>
+			<div style={ { display: "flex", flexDirection: "row" } } >
+				<div style={ { padding: "2em", flex: 3 } } ><Table { ...table2props } /></div>
+				<div style={ { padding: "2em", flex: 3 } } ><Table { ...table3props } /></div>
+				<div style={ { padding: "2em", flex: 3 } } ><Table { ...table4props } /></div>
 			</div>
 			<div><Uploader { ...uploaderProps } /></div>
 		</div>

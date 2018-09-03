@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Header = () => (
-	<div style={ { background: "linear-gradient(to right, white, white, 33%, #00539f, 45%, #00539f)", color: "white", display: "flex", justifyContent: "center", alignItems: "Center" } } >
+	<div style={ { background: "linear-gradient(to right, transparent, transparent, 45%, #00539f)", color: "white", display: "flex", justifyContent: "center", alignItems: "Center" } } >
 		<div style={ { flex: 4, display: "flex" } } ><img src='logo.png' alt="logo" style={ { alignSelf: "flex-start", background: "white", height: "100%" } } /></div>
 		<div style={ { flex: 8 } } ></div>
 		<div style={ { flex: 6, display: "flex", flexDirection: "row", alignItems: "center", alignSelf: "flex-start", padding: "0.5em" } } >

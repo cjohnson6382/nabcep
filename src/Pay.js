@@ -82,7 +82,7 @@ export default class Pay extends React.Component {
 		this.dispatchCallback = this.dispatchCallback.bind(this)
 	}
 
-	state = { nonce: '', cardNumber: "", year: "", month: "", cardCode: "" }
+	state = { nonce: '', cardNumber: "", year: "", month: "", cardCode: "", status: "" }
 
 	async componentWillMount () {
 
@@ -99,12 +99,16 @@ export default class Pay extends React.Component {
 				method: "POST",
 				mode: "cors",
 				headers: { "content-type": "application/json" },
-				body: JSON.stringify(Object.assign({}, { opaqueData, amount: Number(amount), refId: "test refId" } ))
+				body: JSON.stringify(Object.assign({}, { opaqueData, amount: Number(amount), refId: `refId${amount}` } ))
 			}
 			
 			let r = await fetch(url, options)
 			let ret = await r.json()
 
+			this.setState({ status: JSON.stringify(ret) })
+			
+			setTimeout(() => this.setState({ status: "" }), 10000)
+			
 			this.props.paymentReturned(ret)
 		}
 		else if ( messages.resultCode === "Error" ) {
@@ -133,6 +137,7 @@ export default class Pay extends React.Component {
 		let { bodyStyle, titleStyle, payForm, labelStyle, fieldStyle, inputStyle, buffer } = localStyles
 		let { button } = styles
 		let { title } = this.props
+		let { status } = this.state
 		
 		return (
 			<div style={ bodyStyle } >
@@ -168,6 +173,7 @@ export default class Pay extends React.Component {
 						</div>
 					</form>
 				</div>
+				{ status && <div>{ status }</div> }
 			</div>
 		)
 	}

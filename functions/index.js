@@ -60,7 +60,7 @@ const authorizenetPayCallback = ctrl => {
 						console.log('Response Code: ' + response.getTransactionResponse().getResponseCode())
 						console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode())
 						console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription())
-						resolve({ status: "success", message: "test complete" })
+						resolve(response)
 					}
 					else {
 						console.log('Failed Transaction.')
@@ -136,7 +136,7 @@ app.post('/pay', (req, res) => {
 	const ctrl = new APIControllers.CreateTransactionController(createRequest.getJSON())
 	return authorizenetPayCallback(ctrl)
 		.then(r => res.json(r))
-		.catch(e => res.json({ status: "error", message: "something broke: " + e }))
+		.catch(e => res.json(r))
 })
 
 

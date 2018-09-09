@@ -23,6 +23,7 @@
 .env.production.local
 
 notes.md
+*.swp
 
 npm-debug.log*
 yarn-debug.log*

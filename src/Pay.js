@@ -147,7 +147,7 @@ export default class Pay extends React.Component {
 						<h4 style={ { alignSelf: "flex-start" } } >Amount</h4>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >Amount</label>
-							<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in $Dollars.Cents" onChange={ e => change(e) } />
+							<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in 000.00 form" onChange={ e => change(e) } />
 						</div>
 						<h4 style={ { alignSelf: "flex-start" } } >Credit Card Information</h4>
 						<div style={ inputStyle } >
@@ -173,7 +173,7 @@ export default class Pay extends React.Component {
 						</div>
 					</form>
 				</div>
-				{ status && <div>{ status }</div> }
+				{ status && <div style={ { fontWeight: "bold", background: "black", color: "white", borderRadius: "0.5em", padding: "1em" } } >{ status }</div> }
 			</div>
 		)
 	}

@@ -89,6 +89,8 @@ export default class Pay extends React.Component {
 	}
 
 	async dispatchCallback(response) {
+		const { amount } = this.state
+		
 		const { messages, opaqueData } = response
 		if ( messages.resultCode === "Ok" ) {
 			console.log("successful dispatch to authorize.net", ...messages.message)
@@ -97,7 +99,7 @@ export default class Pay extends React.Component {
 				method: "POST",
 				mode: "cors",
 				headers: { "content-type": "application/json" },
-				body: JSON.stringify(Object.assign({}, { opaqueData, amount: 10.00, refId: "test refId" } ))
+				body: JSON.stringify(Object.assign({}, { opaqueData, amount: Number(amount), refId: "test refId" } ))
 			}
 			
 			let r = await fetch(url, options)
@@ -137,6 +139,12 @@ export default class Pay extends React.Component {
 				<h3 style={ titleStyle } >{ title }</h3>
 				<div>
 					<form onSubmit={ pay } style={ payForm } >
+						<h4 style={ { alignSelf: "flex-start" } } >Amount</h4>
+						<div style={ inputStyle } >
+							<label style={ labelStyle } >Amount</label>
+							<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in $Dollars.Cents" onChange={ e => change(e) } />
+						</div>
+						<h4 style={ { alignSelf: "flex-start" } } >Credit Card Information</h4>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >Card Number</label>
 							<input style={ fieldStyle } type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" onChange={ e => change(e) } />

@@ -9,6 +9,10 @@ const csvjson = require('csvjson')
 const express = require('express')
 const fs = require('fs-extra')
 
+const APIControllers = require('authorizenet').APIControllers
+const APIContracts = require('authorizenet').APIContracts
+const SDKConstants = require('authorizenet').SDKConstants
+
 const app = express()
 app.use(cors)
 admin.initializeApp(functions.config().firebase)
@@ -18,7 +22,15 @@ const storage = admin.storage()
 
 const bucket = storage.bucket()
 
+// const apiLoginId = functions.config().authorizenet.apiloginid
+// const transactionKey = functions.config().authorizenet.transactionkey
 
+const merchantAuthenticationType = new APIContracts.MerchantAuthenticationType()
+merchantAuthenticationType.setName(functions.config().authorizenet.apiloginid)
+merchantAuthenticationType.setTransactionKey(functions.config().authorizenet.transactionkey)
+
+// enable production mode
+// ctrl.setEnvironment(SDKConstants.endpoint.production);
 
 
 const batchInsert = users => {
@@ -31,6 +43,103 @@ const batchInsert = users => {
 	
 	return batch.commit()
 }
+
+
+const authorizenetPayCallback = ctrl => {
+	return new Promise((resolve, reject) => {
+		ctrl.execute(() => {
+			const apiResponse = ctrl.getResponse()
+			response = new APIContracts.CreateTransactionResponse(apiResponse)
+			
+			console.log(JSON.stringify(response, null, 2))
+		
+			if ( response !== null ) {
+				if ( response.getMessages().getResultCode() === APIContracts.MessageTypeEnum.OK ) {
+					if( response.getTransactionResponse().getMessages() !== null ) {
+						console.log('Successfully created transaction with Transaction ID: ' + response.getTransactionResponse().getTransId())
+						console.log('Response Code: ' + response.getTransactionResponse().getResponseCode())
+						console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode())
+						console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription())
+						resolve({ status: "success", message: "test complete" })
+					}
+					else {
+						console.log('Failed Transaction.')
+						if( response.getTransactionResponse().getErrors() !== null ) {
+							console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode());
+							console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText());
+							reject(response)
+						}
+					}
+				}
+				else {
+					console.log('Failed Transaction. ');
+					if( response.getTransactionResponse() !== null && response.getTransactionResponse().getErrors() !== null ) {
+					
+						console.log('Error Code: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorCode())
+						console.log('Error message: ' + response.getTransactionResponse().getErrors().getError()[0].getErrorText())
+						reject(response)
+					}
+					else {
+						console.log('Error Code: ' + response.getMessages().getMessage()[0].getCode())
+						console.log('Error message: ' + response.getMessages().getMessage()[0].getText())
+						reject(response)
+					}
+				}
+			}
+			else {
+				console.log('Null Response.')
+				reject(response)
+			}
+		})
+	})
+}
+
+/*
+
+
+
+body = {
+	opaqueData: {
+	  "dataDescriptor": "COMMON.ACCEPT.INAPP.PAYMENT",
+	  "dataValue": "eyJjb2RlIjoiNTBfMl8wNjAwMDUzOTY0QjEwNzY3Q0Y4QzcyQjM0RTNDMzFCMjQ4M0ExMUNFMzEzNUVDMjAxQTdEMzAyOUZCQ0RGMEUyRUNDQTJEMzUzNjE1QTg5RDU3REEzMzMzQURBMzA5Rjc1RTM4MkEwIiwidG9rZW4iOiI5NTM2NTMyNjE5NzkxMDMyNTA0NjAzIiwidiI6IjEuMSJ9"
+	},
+	amount: 10.00
+}
+
+*/
+app.post('/pay', (req, res) => {
+	const body = req.body
+	
+	const opaqueData = new APIContracts.OpaqueDataType()
+	opaqueData.dataDescriptor = body.opaqueData.dataDescriptor
+	opaqueData.dataValue = body.opaqueData.dataValue
+	
+	const paymentType = new APIContracts.PaymentType()
+	paymentType.setOpaqueData(opaqueData)
+	
+	// add all the extended order data, like tax, invoice, description, duty, billto, shipto, line items, transaction details, user fields,
+
+	const transactionRequestType = new APIContracts.TransactionRequestType()
+	transactionRequestType.setTransactionType(APIContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION)
+	transactionRequestType.setPayment(paymentType)
+	transactionRequestType.setAmount(body.amount)
+	
+	const createRequest = new APIContracts.CreateTransactionRequest()
+	createRequest.setMerchantAuthentication(merchantAuthenticationType)
+	createRequest.setTransactionRequest(transactionRequestType)
+	// add a refId to the transaction so it can be linked to a payment in our database
+	createRequest.setRefId(body.refId)
+
+	//	pretty print request
+	console.log(JSON.stringify(createRequest.getJSON(), null, 2))
+		
+	const ctrl = new APIControllers.CreateTransactionController(createRequest.getJSON())
+	return authorizenetPayCallback(ctrl)
+		.then(r => res.json(r))
+		.catch(e => res.json({ status: "error", message: "something broke: " + e }))
+})
+
+
 
 /*
 // trigger from firebase functions:shell node environment

@@ -25,7 +25,7 @@ const Footer = () => (
 		<div style={ {  border: "0.05em solid white", height: "10em", margin: "0 1em 0 1em" } } ></div>
 		<div style={ { flex: 3, display: "flex", flexDirection: "row" } } >
 			<div style={ { flex: 1 } } ></div>
-			<div style={ { flex: 2, flexFlow: "row wrap", padding: "0 2em 0 0" } } >If you’re having any difficulty with this site, please email <a href="#">webmaster@nabcep.org</a></div>
+			<div style={ { flex: 2, flexFlow: "row wrap", padding: "0 2em 0 0" } } >If you’re having any difficulty with this site, please email <a href="/">webmaster@nabcep.org</a></div>
 		</div>
 	</div>
 )

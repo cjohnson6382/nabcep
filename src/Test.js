@@ -3,6 +3,8 @@ import Table from './Table'
 import Form from './Form'
 import Uploader from './Uploader'
 
+import Error from './Error'
+
 
 const Test = ({ title }) => {
 	const formProps = {
@@ -159,6 +161,7 @@ const Test = ({ title }) => {
 	
 	return (
 		<div style={ { border: "0.1em solid #ff8a19", display: "flex", flexDirection: "column", background: "transparent" } } >
+			<div style={ { backgroundColor: "black", color: "white", padding: "1em" } } onClick={ () => Error.error({ message: "throw a test error" }) } >Throw Error</div>
 			<div style={ { display: "flex", borderLeft: "1em solid #f05401", background: "#f8981d", padding: "1em" } } ><h3 style={ { alignSelf: "flex-start", fontWeight: "bold", margin: "0 1em 0 1em" } } >{ title }</h3></div>
 			<div style={ { display: "flex", flexDirection: "row" } } >
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...props } /></div>

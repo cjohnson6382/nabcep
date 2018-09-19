@@ -28,9 +28,11 @@ import PropTypes from "prop-types"
 import { db } from './utilities'
 import styles from './styles'
 
+import { authorizenetConfigDev } from './config'
+
 const authData = {
-	clientKey: process.env.REACT_APP_CLIENT_KEY,
-	apiLoginID: process.env.REACT_APP_API_LOGIN_ID
+	clientKey: authorizenetConfigDev.REACT_APP_CLIENT_KEY,
+	apiLoginID: authorizenetConfigDev.REACT_APP_API_LOGIN_ID
 }
 
 const url = "https://us-central1-nabcep-270f4.cloudfunctions.net/api/pay/"
@@ -64,6 +66,14 @@ const localStyles = {
 	},
 	buffer: {
 		flex: 2
+	},
+	statusMessage: {
+		fontWeight: "bold",
+		background: "black",
+		color: "white",
+		borderRadius: "0.5em",
+		padding: "1em",
+		margin: "1em"
 	}
 }
 
@@ -82,11 +92,11 @@ export default class Pay extends React.Component {
 		this.dispatchCallback = this.dispatchCallback.bind(this)
 	}
 
-	state = { nonce: '', cardNumber: "", year: "", month: "", cardCode: "", status: "" }
+	state = { amount: "", cardNumber: "", year: "", month: "", cardCode: "", status: null }
 
-	async componentWillMount () {
+	// async componentWillMount () {
 
-	}
+	// }
 
 	async dispatchCallback(response) {
 		const { amount } = this.state
@@ -103,13 +113,15 @@ export default class Pay extends React.Component {
 			}
 			
 			let r = await fetch(url, options)
-			let ret = await r.json()
+			let payment = await r.json()
 
-			this.setState({ status: JSON.stringify(ret) })
+			const pRef = db.collection("payments").doc(this.state.paymentId)
+			pRef.set({ payment }, { merge: true })
+			this.setState({ status: payment, amount: "", cardNumber: "", year: "", month: "", cardCode: "" })
 			
-			setTimeout(() => this.setState({ status: "" }), 10000)
+			setTimeout(() => this.setState({ status: null }), 10000)
 			
-			this.props.paymentReturned(ret)
+			this.props.paymentReturned(payment)
 		}
 		else if ( messages.resultCode === "Error" ) {
 			console.log("error sending payment to authorize.net", ...messages.message)
@@ -127,7 +139,10 @@ export default class Pay extends React.Component {
 		let cardData = { cardNumber, year, month, cardCode }
 		let paymentData = { cardData, authData }
 		
-		console.log(paymentData)
+		const pRef = db.collection("payments").doc()
+
+		await this.setState({ paymentId: pRef.id })
+		await pRef.set(paymentData)
 		
 		await window.Accept.dispatchData(paymentData, this.dispatchCallback)
 	}
@@ -147,24 +162,24 @@ export default class Pay extends React.Component {
 						<h4 style={ { alignSelf: "flex-start" } } >Amount</h4>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >Amount</label>
-							<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in 000.00 form" onChange={ e => change(e) } />
+							<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in 000.00 form" value={ this.state.amount } onChange={ e => change(e) } />
 						</div>
 						<h4 style={ { alignSelf: "flex-start" } } >Credit Card Information</h4>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >Card Number</label>
-							<input style={ fieldStyle } type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" onChange={ e => change(e) } />
+							<input style={ fieldStyle } type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" value={ this.state.cardNumber } onChange={ e => change(e) } />
 						</div>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >Month</label>
-							<input style={ fieldStyle } type="text" id="month" name="month" placeholder="2 digit Expiration Month" onChange={ e => change(e) } />
+							<input style={ fieldStyle } type="text" id="month" name="month" placeholder="2 digit Expiration Month" value={ this.state.month } onChange={ e => change(e) } />
 						</div>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >Year</label>
-							<input style={ fieldStyle } type="text" id="year" name="year" placeholder="4-digit Expiration Year" onChange={ e => change(e) } />
+							<input style={ fieldStyle } type="text" id="year" name="year" placeholder="4-digit Expiration Year" value={ this.state.year } onChange={ e => change(e) } />
 						</div>
 						<div style={ inputStyle } >
 							<label style={ labelStyle } >CVV</label>
-							<input style={ fieldStyle } type="text" id="cardCode" name="cardCode" placeholder="CVV Value" onChange={ e => change(e) } />
+							<input style={ fieldStyle } type="text" id="cardCode" name="cardCode" placeholder="CVV Value" value={ this.state.cardCode } onChange={ e => change(e) } />
 						</div>
 						<div style={ { display: "flex" } } >
 							<div style={ buffer } ></div>
@@ -173,7 +188,7 @@ export default class Pay extends React.Component {
 						</div>
 					</form>
 				</div>
-				{ status && <div style={ { fontWeight: "bold", background: "black", color: "white", borderRadius: "0.5em", padding: "1em" } } >{ status }</div> }
+				{ status && <div style={ localStyles.statusMessage } ><pre style={ { color: "white", textAlign: "left" } } >{ JSON.stringify(status, null, 2) }</pre></div> }
 			</div>
 		)
 	}

@@ -8,6 +8,7 @@
     "enzyme-adapter-react-16": "^1.3.0",
     "firebase": "^5.4.1",
     "firebase-tools": "^4.2.0",
+    "history": "^4.7.2",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-bootstrap-table-next": "^1.1.3",

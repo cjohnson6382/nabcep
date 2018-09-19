@@ -6,12 +6,16 @@ const path = require('path')
 const os = require('os')
 const csvjson = require('csvjson')
 
+const PubSub = require(`@google-cloud/pubsub`)
+
 const express = require('express')
 const fs = require('fs-extra')
 
-const APIControllers = require('authorizenet').APIControllers
-const APIContracts = require('authorizenet').APIContracts
-const SDKConstants = require('authorizenet').SDKConstants
+// const APIControllers = require('authorizenet').APIControllers
+// const APIContracts = require('authorizenet').APIContracts
+// const SDKConstants = require('authorizenet').SDKConstants
+
+const { APIControllers, APIContracts, SDKConstants } = require("authorizenet")
 
 const app = express()
 app.use(cors)
@@ -32,6 +36,7 @@ merchantAuthenticationType.setTransactionKey(functions.config().authorizenet.tra
 // enable production mode
 // ctrl.setEnvironment(SDKConstants.endpoint.production);
 
+const pubsub = new PubSub()
 
 const batchInsert = users => {
 	let batch = db.batch()
@@ -234,6 +239,13 @@ app.post('/test_scores', (req, res) => {
 		.catch(e => res.send({ status: "error", message: "resolving transactions promises failed", data: e }) )
 })
 
+
+
+app.post('/notifications', (req, res) => {
+	
+})
+
+
 exports.api = functions.https.onRequest(app)
 
 
@@ -246,7 +258,13 @@ exports.mirrorScores = functions.firestore.document("results/{resultId}").onCrea
 })
 
 
+const logger = message => {
+	pubsub.topic("logging").publisher().publish({ message }).then(() => null).catch(e => console.log("error publishing message", e))
+}
 
+exports.logging = functions.pubsub.topic("logging").onPublish(message => {
+	return db.collection("transaction_log").doc().set(message.json).then(() => null).catch(e => console.log(e))
+})
 
 
 
@@ -267,3 +285,5 @@ exports.mirrorScores = functions.firestore.document("results/{resultId}").onCrea
 	// 	.catch(e => res.send({ status: "error", message: "error calling fs.writeFile", err: e }))
 	
 	// res.send({ status: "success", message: "finished the test_scores route", data: })
+	
+	

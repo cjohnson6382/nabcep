@@ -10,6 +10,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "@google-cloud/pubsub": "^0.20.0",
     "authorizenet": "^1.0.5",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",

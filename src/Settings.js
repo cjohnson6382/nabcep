@@ -3,7 +3,7 @@ import React from 'react'
 import Auth from './Auth'
 import { Link } from 'react-router-dom'
 
-import { db } from './utilities'
+import { db, storage } from './utilities'
 
 
 const localStyles = {
@@ -39,6 +39,8 @@ export default class Settings extends React.Component {
 		
 		this.getPayments = this.getPayments.bind(this)
 		this.getFiles = this.getFiles.bind(this)
+		
+		this.storageRef = storage.ref()
 	}
 	
 	state = { payments: [], files: [] }
@@ -71,6 +73,13 @@ export default class Settings extends React.Component {
 		})
 	}
 	
+	async downloadFile (name, index) {
+		const file = this.state.files[index]
+		const fileRef = this.storageRef.child(file.fullPath)
+		const url = await fileRef.getDownloadURL()
+		window.open(url, '_blank')
+	}
+	
 	
 	render () {
 		const { payments, files } = this.state
@@ -93,11 +102,27 @@ export default class Settings extends React.Component {
 				<div style={ localStyles.body } >
 					<div style={ localStyles.panel } >
 						<h3 style={ localStyles.itemTitle } >Your Payments</h3>
-						{ payments.map((p, i) => <div key={ i } >{ p.payment.refId }</div>) }
+						<div style={ { display: "flex", flexFlow: "row wrap", fontWeight: "bold" } } >
+							<div style={ { flex: 2 } } >Transaction ID</div>
+							<div style={ { flex: 1 } } >Account Number</div>
+							<div style={ { flex: 1 } } >Account Type</div>
+						</div>
+						{ payments.map((p, i) => (
+							<div key={ i } style={ { display: "flex", flexFlow: "row wrap", justifyContent: "space-around", padding: "0 0 0.5em 0" } } >
+								<div style={ { flex: 2 } } >{ p.payment.refId }</div>
+								<div style={ { flex: 1 } } >{ p.payment.transactionResponse.accountNumber }</div>
+								<div style={ { flex: 1 } } >{ p.payment.transactionResponse.accountType }</div>
+							</div>
+						) ) }
 					</div>
 					<div style={ localStyles.panel } >
 						<h3 style={ localStyles.itemTitle } >Your Files</h3>
-						{ files.map((f, i) => <div key={ i } >{ f.name }</div>) }
+						<div>
+							<div style={ { flex: 1, fontWeight: "bold" } } >Name</div>
+						</div>
+						{ files.map((f, i) => (
+							<div style={ { flex: 1, cursor: "pointer" } } onClick={ () => this.downloadFile(f.name, i) } key={ i } >{ f.name }</div>
+						) ) }
 					</div>
 				</div>
 			</div>

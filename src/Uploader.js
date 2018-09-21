@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from "prop-types"
 
+import Auth from './Auth'
+import Error from './Error'
 import { storage, db } from './utilities'
 
 const localStyles = {
@@ -19,6 +21,8 @@ export default class Uploader extends React.Component {
 
 		this.upload = this.upload.bind(this)
 		this.saveFiles = this.saveFiles.bind(this)
+		this.drop = this.drop.bind(this)
+		this.done = this.done.bind(this)
 	}
 
 	state = { files: {}, uploaded: {} }
@@ -26,30 +30,54 @@ export default class Uploader extends React.Component {
 	async saveFiles (filesMap) {
 		const { type } = this.props
 		const storageRef = storage.ref()
-		
-		Object.values(filesMap).forEach(async file => {
-			const fileRef = storageRef.child(`/${type}/${file.name}`)
-			const snapshot = await fileRef.put(file)
+
+		const user = await Auth.getUser()
+		const batch = db.batch()
+
+		try {
+			await Promise.all(Object.values(filesMap).map(async file => {
+				const fileRef = storageRef.child(`/${type}/${file.name}`)
+				await fileRef.put(file)
 			
-			console.log(snapshot)
+				const { fullPath, bucket } = fileRef
+				const url = fileRef.toString()
+	
+				const fRef = db.collection("files").doc()
+				const uRef = db.collection("users").doc(user.uid)
+	
+				batch.set(fRef, { name: file.name, fullPath, bucket, url })
+				batch.set(uRef.collection("files").doc(fRef.id), { name: file.name, fullPath, bucket, url })
+				
+				const ff = this.state.files
+				delete ff[file.name]
+				this.setState({ uploaded: Object.assign({}, this.state.uploaded, { [file.name]: file }), files: ff })
+			}))
 			
-			const { fullPath, bucket } = fileRef
-			const url = fileRef.toString()
-			await db.collection("files").doc().set({ fullPath, bucket, url })
-			
-			const ff = this.state.files
-			delete ff[file.name]
-			this.setState({ uploaded: Object.assign({}, this.state.uploaded, { [file.name]: file }), files: ff })
-		})
-		
+			try {
+				await batch.commit()
+				this.setState({ files: {}, uploaded: {}, status: "Upload was a success" })
+				setTimeout(() => this.setState({ status: null }), 10000)
+			}
+			catch (e) {
+				console.log("batch commit of files to database failed: ", e)
+				Error.error({ message: "could not insert metadata about your files into our database" })
+			}
+		}
+		catch (e) {
+			Error.error({ message: "unable to put your files in our storage bucket" })
+		}
 	}
 
 	async upload (files) {
 		let filesMap = {}
 		files.forEach(f => filesMap[f.name] = f)
-		await this.setState({ files: Object.assign({}, this.state.files, filesMap) })
-		await this.saveFiles(filesMap)
+		
+		try { await this.setState({ files: Object.assign({}, this.state.files, filesMap) }) }
+		catch (e) { Error.error({ message: "the file uploading div is broken" }) }
+		
 	}
+
+	async done () { await this.saveFiles(this.state.files) }
 
 	dragover (e) { e.preventDefault() }
 	

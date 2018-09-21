@@ -38,9 +38,6 @@ const authData = {
 const url = "https://us-central1-nabcep-270f4.cloudfunctions.net/api/pay/"
 
 const localStyles = {
-	bodyStyle: {
-
-	},
 	payForm: {
 		display: "flex",
 		flexDirection: "column"
@@ -188,13 +185,13 @@ export default class Pay extends React.Component {
 
 	render () {
 		let { pay, change } = this
-		let { boxTitle, panel, bodyStyle, head, titleStyle, payForm, labelStyle, fieldStyle, inputStyle, buffer } = localStyles
+		let { boxTitle, panel, head, titleStyle, payForm, labelStyle, fieldStyle, inputStyle, buffer } = localStyles
 		let { button } = styles
 		let { title } = this.props
 		let { status } = this.state
 		
 		return (
-			<div style={ bodyStyle } >
+			<div>
 				<div style={ head } ><h3 style={ titleStyle } >{ title }</h3></div>
 				<div>
 					<form onSubmit={ pay } style={ payForm } >

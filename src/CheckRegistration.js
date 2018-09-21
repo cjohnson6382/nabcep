@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 
 import { db, firebase } from './utilities'
-import Auth, { listenForAuth } from './Auth'
+import Auth from './Auth'
 
 export default class CheckRegistration extends React.Component {
   static propTypes = {
@@ -19,9 +19,7 @@ export default class CheckRegistration extends React.Component {
 
   state = { loading: true, user: {} }
 
-  async componentWillMount () {
-    this.checkRegistration()
-  }
+  async componentWillMount () { this.checkRegistration() }
 
   async getUser () {
 
@@ -32,24 +30,15 @@ export default class CheckRegistration extends React.Component {
   }
 
   async checkRegistration () {
-  	console.log(Auth.isAuthenticated())
-  	console.log("in checkRegistration")
+  	const { auth } = this.props
+  	const user = await auth.getUser()
 
-  	if (Auth.isAuthenticated()) {
-  		this.getUser()
-  	}
-  	else {
-  		console.log("listening for auth..., in App.js")
-  		listenForAuth()
-  	}
-    // auth.isAuthenticated() ? this.setState({ loading: false }) : this.setState({ loading: true })
+	user.uid ? this.setState({ user: auth.dbUser, loading: false }) : this.setState({ loading: false })
   }
 
   render () {
     let Component = this.props.Component
     let { user } = this.state
-
-    console.log(user)
 
     return (
         <div style={ { width: "100%", height: "100%" } } >

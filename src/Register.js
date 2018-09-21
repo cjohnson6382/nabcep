@@ -11,7 +11,7 @@ const Register = ({ history }) => {
 
 	return (
 		<form style={ { padding: "1em" } } onSubmit={ submit } >
-			<div style={ { padding: "1em 0 1em 0" } } >Choose a Username to Display on Your Posts</div>
+			<div style={ { padding: "1em 0 1em 0" } } >Choose a Username</div>
 			<input type="text" style={ { margin: "0 1em 0 0" } } name="name" placeholder="What do we call you?" />
 			<input type="submit" />
 		</form>

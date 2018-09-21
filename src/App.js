@@ -16,10 +16,7 @@ import CheckRegistration from './CheckRegistration'
 
 import './App.css'
 
-const Authorized = ({ component: Component, Auth: auth, ...rest }) => {
-	return <Route { ...rest } render={ props => <CheckRegistration { ...{ ...rest, Component, auth, ...props } } /> } />
-}
-
+const Authorized = ({ component: Component, auth, ...rest }) => <Route { ...rest } render={ props => <CheckRegistration { ...{ ...rest, Component, auth, ...props } } /> } />
 
 class App extends React.Component {
 	render() {
@@ -29,7 +26,7 @@ class App extends React.Component {
 					<Header />
 					<ErrorBar />
 					<Route exact path="/" render={ routeProps => <Test title="DASHBOARD" { ...routeProps } /> } />
-					<Authorized exact path="/pay" render={ routeProps => <Pay auth={ Auth } { ...routeProps } title="Make a Payment" paymentReturned={ (r) => console.log("paymentReturned:", r) } /> } />
+					<Authorized exact path="/pay"  auth={ Auth } title="Make a Payment" paymentReturned={ (r) => console.log("paymentReturned:", r) } component={ Pay } />
 
   					<Route exact path="/login" render={ routeProps => <Login auth={ Auth } { ...routeProps } /> } />
   					<Route exact path="/register" render={ routeProps => <Register { ...routeProps } /> } />

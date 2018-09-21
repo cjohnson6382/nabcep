@@ -6,13 +6,16 @@ const history = createHistory({ forceRefresh: true })
 
 class Auth {
 	constructor () {
-		
 		this.providerLogin = this.providerLogin.bind(this)
 		this.logout = this.logout.bind(this)
 		this.isAuthenticated = this.isAuthenticated.bind(this)
+		
+		
 	}
 
+	connected = false
 	currentUser = firebase.auth().currentUser
+	dbUser = null
 	notificationList = []
 
 	providerMap = {
@@ -38,6 +41,22 @@ class Auth {
 		}
 	}
 
+	async getUser () {
+		if (this.connected) return Promise.resolve(this.currentUser)
+		else {
+			const currentUser = await waitForConnect()
+			this.currentUser = currentUser
+			
+			await this.getDBUser()
+			return currentUser
+		}
+	}
+	
+	async getDBUser () {
+		const dbUser = await db.collection("users").doc(this.currentUser.uid).get()
+		this.dbUser = dbUser.data()
+	}
+
 	isAuthenticated () {
 		return !!firebase.auth().currentUser
 	}
@@ -46,6 +65,7 @@ class Auth {
 
 	logout () {
 		firebase.auth().signOut()
+		this.dbUser = null
 		history.replace('/')
 	}
 	
@@ -60,7 +80,7 @@ export const registerUsername = async name => {
 	console.log(firebase.auth().currentUser.uid)
 	let u = await db.collection("users").doc(firebase.auth().currentUser.uid).get()
 
-	let user = !u.exists ? { id, name, created: timestamp, updated: timestamp, pending: true } : Object.assign({}, u.data(), { updated: timestamp, name })
+	let user = !u.exists ? { id, name, created: timestamp, updated: timestamp, pending: false } : Object.assign({}, u.data(), { updated: timestamp, name })
 
 	try {
 		await db.collection("users").doc(id).set(user)
@@ -73,33 +93,40 @@ export const registerUsername = async name => {
 
 }
 
-export const listenForAuth = () => {
-	console.log("listening for auth change")
-	let unsubscribe = firebase.auth().onAuthStateChanged(async user => {
-		console.log("auth state has changed: ", user)
-		if (user) {
-			let u = await db.collection("users").doc(user.uid).get()
-		
-			if (firebase.auth().currentUser.uid && !u.exists) {
-				history.push("/register")
-			}
-
-			if (u.pending === true) {
-			  console.log("about to push to pending: ", u)
-			  history.push("/pending")
-			}
-
-			if (u.pending === false) {
-				console.log("user is all setup and ready to be used")
-				history.push("/")
-			}
-		}
-		else {
-			console.log("pushing back to login")
-			Error.error("login failed for an unknown reason")
-		  	history.push("/login")
-		}
-		
-		unsubscribe()
+const waitForConnect = () => {
+	return new Promise((resolve, reject) => {
+		let unsubscribe = firebase.auth().onAuthStateChanged(user => {
+			unsubscribe()
+			user ? resolve(user) : reject()
+		})
 	})
+}
+
+export const listenForAuth = async () => {
+	const user = await waitForConnect()
+	if (user) {
+		let u = await db.collection("users").doc(user.uid).get()
+		const localUser = u.data()
+	
+		if (firebase.auth().currentUser.uid && !u.exists) {
+			history.replace("/register")
+		}
+
+		if (localUser.pending === true) {
+		  console.log("about to push to pending: ", u)
+		  history.replace("/pending")
+		}
+
+		if (localUser.pending === false) {
+			console.log("user is all setup and ready to be used")
+			history.replace("/")
+		}
+		
+		console.log("didn't trip any of the if conditions")
+	}
+	else {
+		console.log("pushing back to login")
+		Error.error("login failed for an unknown reason")
+	  	history.replace("/login")
+	}
 }

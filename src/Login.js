@@ -11,7 +11,7 @@ const localStyles = {
 		justifyContent: "center",
 		alignItems: "center",
 		padding: "1em",
-		backgroundColor: "#202225"
+		backgroundColor: "transparent"
 	}
 }
 

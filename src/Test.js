@@ -5,6 +5,8 @@ import Uploader from './Uploader'
 
 import Error from './Error'
 
+import { Link } from 'react-router-dom'
+
 
 const Test = ({ title }) => {
 	const formProps = {
@@ -161,7 +163,8 @@ const Test = ({ title }) => {
 	
 	return (
 		<div style={ { border: "0.1em solid #ff8a19", display: "flex", flexDirection: "column", background: "transparent" } } >
-			<div style={ { backgroundColor: "black", color: "white", padding: "1em" } } onClick={ () => Error.error({ message: "throw a test error" }) } >Throw Error</div>
+			<div style={ { backgroundColor: "black", color: "white", padding: "1em" } } onClick={ () => Error.error({ message: "throw a test error" }) } >Generate an Error to see how the Error Bar Works</div>
+			<Link to="/pay" style={ { backgroundColor: "darkgrey", color: "white", padding: "1em" } } >Go to the Pay Page</Link>
 			<div style={ { display: "flex", borderLeft: "1em solid #f05401", background: "#f8981d", padding: "1em" } } ><h3 style={ { alignSelf: "flex-start", fontWeight: "bold", margin: "0 1em 0 1em" } } >{ title }</h3></div>
 			<div style={ { display: "flex", flexDirection: "row" } } >
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...props } /></div>

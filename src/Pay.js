@@ -92,14 +92,15 @@ export default class Pay extends React.Component {
 		this.dispatchCallback = this.dispatchCallback.bind(this)
 	}
 
-	state = { amount: "", cardNumber: "", year: "", month: "", cardCode: "", status: null }
+	state = { amount: "", cardNumber: "", year: "", month: "", cardCode: "", status: null, user: null }
 
-	// async componentWillMount () {
-
-	// }
+	async componentWillMount () {
+		const user = await this.props.auth.getUser()
+		this.setState({ user })
+	}
 
 	async dispatchCallback(response) {
-		const { amount } = this.state
+		const { amount, user, paymentId } = this.state
 		
 		const { messages, opaqueData } = response
 		if ( messages.resultCode === "Ok" ) {
@@ -109,19 +110,35 @@ export default class Pay extends React.Component {
 				method: "POST",
 				mode: "cors",
 				headers: { "content-type": "application/json" },
-				body: JSON.stringify(Object.assign({}, { opaqueData, amount: Number(amount), refId: `refId${amount}` } ))
+				body: JSON.stringify(Object.assign({}, { opaqueData, amount: Number(amount), refId: user.uid } ))
 			}
 			
-			let r = await fetch(url, options)
-			let payment = await r.json()
-
-			const pRef = db.collection("payments").doc(this.state.paymentId)
-			pRef.set({ payment }, { merge: true })
-			this.setState({ status: payment, amount: "", cardNumber: "", year: "", month: "", cardCode: "" })
+			try {
+				let r = await fetch(url, options)
+				let payment = await r.json()
+	
+				const batch = db.batch()
+	
+				const pRef = db.collection("payments").doc(paymentId)
+				const uRef = db.collection("users").doc(user.uid)
+				// pRef.set({ payment }, { merge: true })
+				batch.set(pRef, { payment }, { merge: true })
+				batch.set(uRef.collection("payments").doc(paymentId), { payment }, { merge: true })
+				
+				try {
+					await batch.commit()
+					this.setState({ status: payment, amount: "", cardNumber: "", year: "", month: "", cardCode: "" })
+					
+					setTimeout(() => this.setState({ status: null }), 10000)
+					
+					this.props.paymentReturned(payment)
+				}
+				catch (e) { console.log("batch commit of payment data failed: ", e) }
+			}
+			catch (e) {
+				console.log("posting to the /pay route failed", e)
+			}
 			
-			setTimeout(() => this.setState({ status: null }), 10000)
-			
-			this.props.paymentReturned(payment)
 		}
 		else if ( messages.resultCode === "Error" ) {
 			console.log("error sending payment to authorize.net", ...messages.message)

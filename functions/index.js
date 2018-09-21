@@ -65,7 +65,13 @@ const authorizenetPayCallback = ctrl => {
 						console.log('Response Code: ' + response.getTransactionResponse().getResponseCode())
 						console.log('Message Code: ' + response.getTransactionResponse().getMessages().getMessage()[0].getCode())
 						console.log('Description: ' + response.getTransactionResponse().getMessages().getMessage()[0].getDescription())
-						resolve(response)
+						
+						console.log("response refId", response.refId)
+						
+						db.collection("ref_map").doc(response.refId).get()
+							.then(hId => resolve( Object.assign({}, response, { refId: hId.data().id } ) ) )
+							.catch(e => console.log(e))
+						// resolve(response)
 					}
 					else {
 						console.log('Failed Transaction.')
@@ -99,9 +105,20 @@ const authorizenetPayCallback = ctrl => {
 	})
 }
 
+
+const hasher = id => {
+	let hash = 0, c
+	if (id.length === 0) return hash
+	for ( let i = 0; i < id.length; i++ ) {
+		c = id.charCodeAt(i)
+		hash = ( (hash << 5) - hash ) + c
+		hash = hash & hash
+	}
+
+	return hash
+}
+
 /*
-
-
 
 body = {
 	opaqueData: {
@@ -132,16 +149,21 @@ app.post('/pay', (req, res) => {
 	const createRequest = new APIContracts.CreateTransactionRequest()
 	createRequest.setMerchantAuthentication(merchantAuthenticationType)
 	createRequest.setTransactionRequest(transactionRequestType)
+	
 	// add a refId to the transaction so it can be linked to a payment in our database
-	createRequest.setRefId(body.refId)
-
-	//	pretty print request
-	console.log(JSON.stringify(createRequest.getJSON(), null, 2))
-		
-	const ctrl = new APIControllers.CreateTransactionController(createRequest.getJSON())
-	return authorizenetPayCallback(ctrl)
+	
+	hId = hasher(body.refId).toString()
+	
+	return db.collection("ref_map").doc(hId).set({ id: body.refId })
+		.then(() => {
+			createRequest.setRefId(hId)
+			console.log(JSON.stringify(createRequest.getJSON(), null, 2))
+			return createRequest
+		})
+		.then(createRequest => new APIControllers.CreateTransactionController(createRequest.getJSON()))
+		.then(ctrl => authorizenetPayCallback(ctrl))
 		.then(r => res.json(r))
-		.catch(e => res.json(r))
+		.catch(e => res.json(e))
 })
 
 

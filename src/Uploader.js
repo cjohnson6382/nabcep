@@ -3,6 +3,10 @@ import PropTypes from "prop-types"
 
 import { storage, db } from './utilities'
 
+const localStyles = {
+	button: { background: "linear-gradient(#3979d2, #154c94)", color: "white", borders: "none", padding: "0.3em", flex: 1 }
+}
+
 export default class Uploader extends React.Component {
 	static propTypes = {
 		auth: PropTypes.object,
@@ -109,7 +113,7 @@ export default class Uploader extends React.Component {
 					</div>
 					<div style={ { display: "flex", flexDirection: "row" } } >
 						<div style={ { flex: 1 } } ></div>
-						<div style={ { background: "linear-gradient(#3979d2, #154c94)", color: "white", borders: "none", padding: "0.3em", flex: 1 } } onClick={ done } >Done</div>
+						<div style={ localStyles.button } onClick={ done } >Done</div>
 						<div style={ { flex: 1 } } ></div>
 					</div>
 				</div>

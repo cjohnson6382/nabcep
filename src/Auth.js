@@ -47,6 +47,7 @@ class Auth {
 			try {
 				const currentUser = await waitForConnect()
 				this.currentUser = currentUser
+				this.connected = true
 
 				try {
 					await this.getDBUser()

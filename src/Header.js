@@ -1,6 +1,9 @@
 import React from 'react'
-import Auth from './Auth'
+
 import { Link } from 'react-router-dom'
+
+import Icon from './Icon'
+import Auth from './Auth'
 
 export default class Header extends React.Component {
 	state = { currentUser: null }
@@ -29,7 +32,7 @@ export default class Header extends React.Component {
 						<div style={ { padding: "0 0.3em 0 0" } } >Welcome</div>
 						<div style={ { fontWeight: "bold", padding: "0 0.3em 0 0" } } >{ currentUser.displayName }</div>
 						<div style={ { padding: "0 0.3em 0 0", height: "0.4em", width: "0.4em", backgroundColor: "white", borderRadius: "50%", fontSize: "1em" } } ></div>
-						<div style={ { color: "#f8981d", padding: "0 0.3em 0 0.3em", cursor: "pointer" } } onClick={ () => console.log("implement change password function") } >Change Your Password</div>
+						<Link to="/settings" style={ { color: "#f8981d", padding: "0 0.3em 0 0.3em", cursor: "pointer" } } ><Icon icon="fas fa-cog" /></Link>
 						<div style={ { padding: "0 0.3em 0 0", height: "0.4em", width: "0.4em", backgroundColor: "white", borderRadius: "50%", fontSize: "1em" } } ></div>
 						<div style={ { color: "#f8981d", padding: "0 0 0 0.3em", cursor: "pointer" } } onClick={ () => Auth.logout() } >Logout</div>
 					</div>

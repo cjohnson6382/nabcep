@@ -33,17 +33,11 @@ export default class CheckRegistration extends React.Component {
   }
 
   async checkRegistration () {
-  	const { auth } = this.props
+  	// const { auth } = this.props
   	
   	try {
-  		console.log("mark 1")
-  		
-	  	const user = await auth.getUser()
-	  	
-	  	console.log("mark 0")
-	  	
-	  	
-		user.uid ? this.setState({ user: auth.dbUser, loading: false }) : history.push("/login")
+	  	const user = await Auth.getUser()
+		user.uid ? this.setState({ user: Auth.dbUser, loading: false }) : history.push("/login")
   	}
   	catch (e) { console.log(e) }
 

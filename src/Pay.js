@@ -39,10 +39,7 @@ const url = "https://us-central1-nabcep-270f4.cloudfunctions.net/api/pay/"
 
 const localStyles = {
 	bodyStyle: {
-		padding: "2em"
-	},
-	titleStyle: {
-		padding: "1em"
+
 	},
 	payForm: {
 		display: "flex",
@@ -74,7 +71,26 @@ const localStyles = {
 		borderRadius: "0.5em",
 		padding: "1em",
 		margin: "1em"
-	}
+	},
+	head: {
+		display: "flex",
+		borderLeft: "1em solid #f05401",
+		background: "#f8981d", padding: "1em"
+	},
+	titleStyle: { alignSelf: "flex-start", fontWeight: "bold", margin: "0 1em 0 1em" },
+	box: { padding: "0.5em", display: "flex", flexFlow: "row wrap" },
+	boxTitle: {
+		background: "linear-gradient(#b4b4b4, #cacaca)",
+		padding: "1rem"
+	},
+	panel: {
+		display: "flex",
+		flexFlow: "column wrap",
+		flex: 1,
+		background: "rgb(229, 229, 229)",
+		padding: "1em",
+		margin: "1em"
+	},
 }
 
 export default class Pay extends React.Component {
@@ -172,42 +188,46 @@ export default class Pay extends React.Component {
 
 	render () {
 		let { pay, change } = this
-		let { bodyStyle, titleStyle, payForm, labelStyle, fieldStyle, inputStyle, buffer } = localStyles
+		let { boxTitle, panel, bodyStyle, head, titleStyle, payForm, labelStyle, fieldStyle, inputStyle, buffer } = localStyles
 		let { button } = styles
 		let { title } = this.props
 		let { status } = this.state
 		
 		return (
 			<div style={ bodyStyle } >
-				<h3 style={ titleStyle } >{ title }</h3>
+				<div style={ head } ><h3 style={ titleStyle } >{ title }</h3></div>
 				<div>
 					<form onSubmit={ pay } style={ payForm } >
-						<h4 style={ { alignSelf: "flex-start" } } >Amount</h4>
-						<div style={ inputStyle } >
-							<label style={ labelStyle } >Amount</label>
-							<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in 000.00 form" value={ this.state.amount } onChange={ e => change(e) } />
+						<div style={ panel } >
+							<h4 style={ boxTitle } >Amount</h4>
+							<div style={ inputStyle } >
+								<label style={ labelStyle } >Amount</label>
+								<input style={ fieldStyle } type="text" id="amount" name="amount" placeholder="Amount in 000.00 form" value={ this.state.amount } onChange={ e => change(e) } />
+							</div>
 						</div>
-						<h4 style={ { alignSelf: "flex-start" } } >Credit Card Information</h4>
-						<div style={ inputStyle } >
-							<label style={ labelStyle } >Card Number</label>
-							<input style={ fieldStyle } type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" value={ this.state.cardNumber } onChange={ e => change(e) } />
-						</div>
-						<div style={ inputStyle } >
-							<label style={ labelStyle } >Month</label>
-							<input style={ fieldStyle } type="text" id="month" name="month" placeholder="2 digit Expiration Month" value={ this.state.month } onChange={ e => change(e) } />
-						</div>
-						<div style={ inputStyle } >
-							<label style={ labelStyle } >Year</label>
-							<input style={ fieldStyle } type="text" id="year" name="year" placeholder="4-digit Expiration Year" value={ this.state.year } onChange={ e => change(e) } />
-						</div>
-						<div style={ inputStyle } >
-							<label style={ labelStyle } >CVV</label>
-							<input style={ fieldStyle } type="text" id="cardCode" name="cardCode" placeholder="CVV Value" value={ this.state.cardCode } onChange={ e => change(e) } />
-						</div>
-						<div style={ { display: "flex" } } >
-							<div style={ buffer } ></div>
-							<input type="submit" value="Pay" style={ { ...button, flex: 1 } } />
-							<div style={ buffer } ></div>
+						<div style={ panel } >
+							<h4 style={ boxTitle } >Credit Card Information</h4>
+							<div style={ inputStyle } >
+								<label style={ labelStyle } >Card Number</label>
+								<input style={ fieldStyle } type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" value={ this.state.cardNumber } onChange={ e => change(e) } />
+							</div>
+							<div style={ inputStyle } >
+								<label style={ labelStyle } >Month</label>
+								<input style={ fieldStyle } type="text" id="month" name="month" placeholder="2 digit Expiration Month" value={ this.state.month } onChange={ e => change(e) } />
+							</div>
+							<div style={ inputStyle } >
+								<label style={ labelStyle } >Year</label>
+								<input style={ fieldStyle } type="text" id="year" name="year" placeholder="4-digit Expiration Year" value={ this.state.year } onChange={ e => change(e) } />
+							</div>
+							<div style={ inputStyle } >
+								<label style={ labelStyle } >CVV</label>
+								<input style={ fieldStyle } type="text" id="cardCode" name="cardCode" placeholder="CVV Value" value={ this.state.cardCode } onChange={ e => change(e) } />
+							</div>
+							<div style={ { display: "flex" } } >
+								<div style={ buffer } ></div>
+								<input type="submit" value="Pay" style={ { ...button, flex: 1 } } />
+								<div style={ buffer } ></div>
+							</div>
 						</div>
 					</form>
 				</div>

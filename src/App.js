@@ -8,6 +8,7 @@ import Footer from './Footer'
 import Pay from './Pay'
 import Login from './Login'
 import Register from './Register'
+import Settings from './Settings'
 
 // non-displaying classes
 import ErrorBar from './ErrorBar'
@@ -27,7 +28,7 @@ class App extends React.Component {
 					<ErrorBar />
 					<Route exact path="/" render={ routeProps => <Test title="DASHBOARD" { ...routeProps } /> } />
 					<Authorized exact path="/pay"  auth={ Auth } title="Make a Payment" paymentReturned={ (r) => console.log("paymentReturned:", r) } component={ Pay } />
-
+					<Authorized exact path="/settings" component={ Settings } />
   					<Route exact path="/login" render={ routeProps => <Login auth={ Auth } { ...routeProps } /> } />
   					<Route exact path="/register" render={ routeProps => <Register { ...routeProps } /> } />
   					

@@ -2,6 +2,7 @@ import React from 'react'
 
 const Footer = () => (
 	<div style={ { borderLeft: "1em solid #f05401", background: "#656363", padding: "1em", display: "flex", justifyContent: "center", alignItems: "Center", flexDirection: "row", color: "white" } } >
+		<h1 style={ { position: "absolute", alignItems: "center", justifyContent: "center", opacity: "0.5", color: "white", fontWeight: "bold" } } >THE FOOTER IS ALL STATIC PLACEHOLDER CONTENT</h1>
 		<div style={ { flex: 1, display: "flex", flexDirection: "column" } } >
 			<div style={ { fontWeight: "bold", color: "#fe8a19" } } >NAME</div>
 			<div>address 1</div>

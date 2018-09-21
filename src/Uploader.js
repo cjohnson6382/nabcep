@@ -27,6 +27,11 @@ export default class Uploader extends React.Component {
 
 	state = { files: {}, uploaded: {} }
 
+	async componentDidMount () {
+		const user = await Auth.getUser()
+		await this.setState({ user })
+	}
+
 	async saveFiles (filesMap) {
 		const { type } = this.props
 		const storageRef = storage.ref()
@@ -105,46 +110,49 @@ export default class Uploader extends React.Component {
 
 	render () {
 		const { done, drop, dragover } = this
-		const { files, uploaded } = this.state
+		const { files, uploaded, user } = this.state
 		
 		return (
 			<div style={ { display: "flex", flexDirection: "column", background: "transparent" } } >
-				<div style={ { padding: "2em" } } >
-					<div onDrop={ drop } onDragOver={ dragover } style={ { zIndex: 5, background: "transparent", padding: "3em", border: "0.1em dashed lightgrey", borderRadius: "0.5em", margin: "1em" } } >
-						<div style={ { padding: "2em", fontWeight: "bold" } } >Drag and Drop Files to this Box to Upload Them</div>
-						<div style={ { display: "flex", flexDirection: "column" } } >
-							{ Object.keys(files).length > 0 &&
-								<div>
-									<div>Queued</div>
-									{ Object.values(files).map((file, i) => (
-										<div key={ i } style={ { display: "flex", flexDirection: "row" } } >
-											<div style={ { padding: "0.5em" } } >{ file.name }</div>
-											<div style={ { padding: "0.5em" } } >{ file.type }</div>
-										</div>
-									)) }
-								</div>
-							}
+				{ (!user || !user.uid) && <h1 style={ { padding: "2em", margin: "1em", backgroundColor: "black", color: "white" } } >You must be logged in to upload files</h1> }
+				{ user && user.uid &&
+					<div style={ { padding: "2em" } } >
+						<div onDrop={ drop } onDragOver={ dragover } style={ { zIndex: 5, background: "transparent", padding: "3em", border: "0.1em dashed lightgrey", borderRadius: "0.5em", margin: "1em" } } >
+							<div style={ { padding: "2em", fontWeight: "bold" } } >Drag and Drop Files to this Box to Upload Them</div>
+							<div style={ { display: "flex", flexDirection: "column" } } >
+								{ Object.keys(files).length > 0 &&
+									<div>
+										<div>Queued</div>
+										{ Object.values(files).map((file, i) => (
+											<div key={ i } style={ { display: "flex", flexDirection: "row" } } >
+												<div style={ { padding: "0.5em" } } >{ file.name }</div>
+												<div style={ { padding: "0.5em" } } >{ file.type }</div>
+											</div>
+										)) }
+									</div>
+								}
+							</div>
+							<div style={ { display: "flex", flexDirection: "column" } } >
+								{ Object.keys(uploaded).length > 0 &&
+									<div>
+										<div>Uploaded</div>
+										{ Object.values(uploaded).map((file, i) => (
+											<div key={ i } style={ { display: "flex", flexDirection: "row" } } >
+												<div style={ { padding: "0.5em" } } >{ file.name }</div>
+												<div style={ { padding: "0.5em" } } >{ file.type }</div>
+											</div>
+										)) }
+									</div>
+								}
+							</div>
 						</div>
-						<div style={ { display: "flex", flexDirection: "column" } } >
-							{ Object.keys(uploaded).length > 0 &&
-								<div>
-									<div>Uploaded</div>
-									{ Object.values(uploaded).map((file, i) => (
-										<div key={ i } style={ { display: "flex", flexDirection: "row" } } >
-											<div style={ { padding: "0.5em" } } >{ file.name }</div>
-											<div style={ { padding: "0.5em" } } >{ file.type }</div>
-										</div>
-									)) }
-								</div>
-							}
+						<div style={ { display: "flex", flexDirection: "row" } } >
+							<div style={ { flex: 1 } } ></div>
+							<div style={ localStyles.button } onClick={ done } >Done</div>
+							<div style={ { flex: 1 } } ></div>
 						</div>
 					</div>
-					<div style={ { display: "flex", flexDirection: "row" } } >
-						<div style={ { flex: 1 } } ></div>
-						<div style={ localStyles.button } onClick={ done } >Done</div>
-						<div style={ { flex: 1 } } ></div>
-					</div>
-				</div>
+				}
 			</div>
 		)
 	}

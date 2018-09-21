@@ -25,7 +25,7 @@ export default class Header extends React.Component {
 					</div>
 				}
 				{ currentUser &&
-					<div style={ { flex: 12, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end", padding: "0.5em 1em 0.5em 0.5em" } } >
+					<div style={ { flex: 12, display: "flex", flexFlow: "row wrap", alignItems: "center", justifyContent: "flex-end", padding: "0.5em 1em 0.5em 0.5em" } } >
 						<div style={ { padding: "0 0.3em 0 0" } } >Welcome</div>
 						<div style={ { fontWeight: "bold", padding: "0 0.3em 0 0" } } >{ currentUser.displayName }</div>
 						<div style={ { padding: "0 0.3em 0 0", height: "0.4em", width: "0.4em", backgroundColor: "white", borderRadius: "50%", fontSize: "1em" } } ></div>

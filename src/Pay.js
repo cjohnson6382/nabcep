@@ -158,10 +158,16 @@ export default class Pay extends React.Component {
 		
 		const pRef = db.collection("payments").doc()
 
-		await this.setState({ paymentId: pRef.id })
-		await pRef.set(paymentData)
-		
-		await window.Accept.dispatchData(paymentData, this.dispatchCallback)
+		try {
+			await this.setState({ paymentId: pRef.id })
+			await pRef.set(paymentData)
+			
+			await window.Accept.dispatchData(paymentData, this.dispatchCallback)
+		}
+		catch (e) {
+			console.log("something went wrong in the pay function", e)
+		}
+
 	}
 
 	render () {

@@ -44,17 +44,34 @@ class Auth {
 	async getUser () {
 		if (this.connected) return Promise.resolve(this.currentUser)
 		else {
-			const currentUser = await waitForConnect()
-			this.currentUser = currentUser
-			
-			await this.getDBUser()
-			return currentUser
+			try {
+				const currentUser = await waitForConnect()
+				this.currentUser = currentUser
+
+				try {
+					await this.getDBUser()
+					return currentUser
+				}
+				catch (e) {
+					console.log(e)
+					return {}
+				}
+			}
+			catch (e) {
+				console.log(e)
+				return {}
+			}
 		}
 	}
 	
 	async getDBUser () {
-		const dbUser = await db.collection("users").doc(this.currentUser.uid).get()
-		this.dbUser = dbUser.data()
+		try {
+			const dbUser = await db.collection("users").doc(this.currentUser.uid).get()
+			this.dbUser = dbUser.data()
+		}
+		catch (e) {
+			console.log(e)
+		}
 	}
 
 	isAuthenticated () {
@@ -103,30 +120,33 @@ const waitForConnect = () => {
 }
 
 export const listenForAuth = async () => {
-	const user = await waitForConnect()
-	if (user) {
-		let u = await db.collection("users").doc(user.uid).get()
-		const localUser = u.data()
-	
-		if (firebase.auth().currentUser.uid && !u.exists) {
-			history.replace("/register")
-		}
-
-		if (localUser.pending === true) {
-		  console.log("about to push to pending: ", u)
-		  history.replace("/pending")
-		}
-
-		if (localUser.pending === false) {
-			console.log("user is all setup and ready to be used")
-			history.replace("/")
-		}
+	try {
+		const user = await waitForConnect()
+		if (user) {
+			let u = await db.collection("users").doc(user.uid).get()
+			const localUser = u.data()
 		
-		console.log("didn't trip any of the if conditions")
+			if (firebase.auth().currentUser.uid && !u.exists) {
+				history.replace("/register")
+			}
+	
+			if (localUser.pending === true) {
+			  console.log("about to push to pending: ", u)
+			  history.replace("/pending")
+			}
+	
+			if (localUser.pending === false) {
+				console.log("user is all setup and ready to be used")
+				history.replace("/")
+			}
+			
+			console.log("didn't trip any of the if conditions")
+		}
+		else {
+			console.log("pushing back to login")
+			Error.error("login failed for an unknown reason")
+		  	history.replace("/login")
+		}
 	}
-	else {
-		console.log("pushing back to login")
-		Error.error("login failed for an unknown reason")
-	  	history.replace("/login")
-	}
+	catch (e) { console.log(e) }
 }

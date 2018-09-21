@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import createHistory from 'history/createBrowserHistory'
 
 import { Redirect } from 'react-router-dom'
 
 import { db, firebase } from './utilities'
 import Auth from './Auth'
+
+const history = createHistory({ forceRefresh: true })
 
 export default class CheckRegistration extends React.Component {
   static propTypes = {
@@ -31,9 +34,19 @@ export default class CheckRegistration extends React.Component {
 
   async checkRegistration () {
   	const { auth } = this.props
-  	const user = await auth.getUser()
+  	
+  	try {
+  		console.log("mark 1")
+  		
+	  	const user = await auth.getUser()
+	  	
+	  	console.log("mark 0")
+	  	
+	  	
+		user.uid ? this.setState({ user: auth.dbUser, loading: false }) : history.push("/login")
+  	}
+  	catch (e) { console.log(e) }
 
-	user.uid ? this.setState({ user: auth.dbUser, loading: false }) : this.setState({ loading: false })
   }
 
   render () {

@@ -166,11 +166,11 @@ const Test = ({ title }) => {
 			<div style={ { backgroundColor: "black", color: "white", padding: "1em" } } onClick={ () => Error.error({ message: "throw a test error" }) } >Generate an Error to see how the Error Bar Works</div>
 			<Link to="/pay" style={ { backgroundColor: "darkgrey", color: "white", padding: "1em" } } >Go to the Pay Page</Link>
 			<div style={ { display: "flex", borderLeft: "1em solid #f05401", background: "#f8981d", padding: "1em" } } ><h3 style={ { alignSelf: "flex-start", fontWeight: "bold", margin: "0 1em 0 1em" } } >{ title }</h3></div>
-			<div style={ { display: "flex", flexDirection: "row" } } >
+			<div style={ { display: "flex", flexFlow: "row wrap" } } >
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...props } /></div>
 				<div style={ { padding: "2em", flex: 2 } } ><Form { ...formProps } /></div>
 			</div>
-			<div style={ { display: "flex", flexDirection: "row" } } >
+			<div style={ { display: "flex", flexFlow: "row wrap" } } >
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...table2props } /></div>
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...table3props } /></div>
 				<div style={ { padding: "2em", flex: 3 } } ><Table { ...table4props } /></div>

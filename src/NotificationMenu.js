@@ -22,7 +22,31 @@ const localStyles = {
 		textDecoration: "none",
 		cursor: "pointer",
 		flex: 1
-	})
+	}),
+	notificationsMenu: s => ({ 
+		position: "absolute", 
+		alignItems: "center", 
+		justifyContent: "center", 
+		backgroundColor: "white", 
+		color: "black",
+		display: s ? "initial" : "none"
+	}),
+	counter: {
+		borderRadius: "45%",
+		border: "0.1rem solid white",
+		color: "white",
+		position: "absolute",
+		alignItems: "center",
+		justifyContent: "center",
+		background: "transparent",
+		margin: "-0.2rem 0 0 1rem",
+		fontSize: "40%",
+		padding: "0 0.3rem 0 0.3rem"
+	},
+	notificationContainer: {
+		display: "flex",
+
+	}
 }
 
 export default class NotificationMenu extends React.Component { 
@@ -36,7 +60,7 @@ export default class NotificationMenu extends React.Component {
 		this.refresh = this.refresh.bind(this)
 	}
 
-	state = { currentUser: null, notifications: {} }
+	state = { currentUser: null, notifications: {}, show: false }
 	
 	async componentWillMount () {
 		try {
@@ -95,15 +119,25 @@ export default class NotificationMenu extends React.Component {
 	}
 
 	render () {
-		const { notifications } = this.state
+		const { notifications, show } = this.state
+
+		const unread = Object.values(notifications).filter(n => !n.read)
 
 		return (
-			<div style={ { fontSize: "75%", backgroundColor: "grey" } } >
-				<div style={ { color: "white", padding: "1rem" } } >Dummy Notification Menu</div>
-				<div style={ localStyles.list } >{ Object.values(notifications).map(n => 
-					<div style={ localStyles.notification(n.read) } onClick={ () => this.click(n) } key={ n.id } >{ n.message }</div>
-				) }</div>
-				<div onClick={ this.refresh } >Refresh Notifications</div>
+			<div style={ { fontSize: "200%", color: "#f8981d", padding: "0 1rem 0 0", cursor: "pointer" } } >
+				<div style={ localStyles.notificationContainer } >
+					<div onClick={ () => this.setState({ show: !show }) } ><Icon icon="fa fa-bell" /></div>
+					{ unread.length > 0 && <div style={ localStyles.counter } >{ unread.length }</div> }
+				</div>
+				<div onMouseLeave={ () => this.setState({ show: false }) } style={ localStyles.notificationsMenu(show) } >
+					<div style={ { fontSize: "75%", backgroundColor: "grey" } } >
+						<div style={ { color: "white", padding: "1rem" } } >Dummy Notification Menu</div>
+						<div style={ localStyles.list } >{ Object.values(notifications).map(n => 
+							<div style={ localStyles.notification(n.read) } onClick={ () => this.click(n) } key={ n.id } >{ n.message }</div>
+						) }</div>
+						<div onClick={ this.refresh } >Refresh Notifications</div>
+					</div>
+				</div>
 			</div>
 		)
 	}

@@ -7,29 +7,17 @@ import Auth from './Auth'
 
 import NotificationMenu from './NotificationMenu'
 
-const localStyles = {
-	notificationsMenu: s => ({ 
-		position: "absolute", 
-		alignItems: "center", 
-		justifyContent: "center", 
-		backgroundColor: "white", 
-		color: "black",
-		display: s ? "initial" : "none"
-	})
-}
-
 export default class Header extends React.Component {
 	state = { currentUser: null, notifications: false }
 	
 	async componentWillMount () {
 		const currentUser = await Auth.getUser()
 		
-		this.setState({ currentUser, notifications: false })
+		this.setState({ currentUser })
 	}
 	
 	render () {
-		const { currentUser, notifications } = this.state
-		console.log(notifications)
+		const { currentUser } = this.state
 		
 		return (
 			<div style={ { background: "linear-gradient(to right, transparent, transparent, 45%, #00539f)", color: "white", display: "flex", justifyContent: "center", alignItems: "Center" } } >
@@ -43,11 +31,7 @@ export default class Header extends React.Component {
 				}
 				{ currentUser &&
 					<div style={ { flex: 12, display: "flex", flexFlow: "row wrap", alignItems: "center", justifyContent: "flex-end", padding: "0.5em 1em 0.5em 0.5em" } } >
-						<div style={ { fontSize: "200%", color: "#f8981d", padding: "0 1rem 0 0", cursor: "pointer" } } >
-							<div onClick={ () => this.setState({ notifications: !notifications }) } ><Icon icon="fa fa-bell" /></div>
-						{ /* this.setState({ notifications: false }) */ }
-							<div onMouseLeave={ () => this.setState({ notifications: false }) } style={ localStyles.notificationsMenu(notifications) } ><NotificationMenu /></div>
-						</div>
+						<NotificationMenu />
 						<div style={ { padding: "0 0.3em 0 0" } } >Welcome</div>
 						<div style={ { fontWeight: "bold", padding: "0 0.3em 0 0" } } >{ currentUser.displayName }</div>
 						<div style={ { padding: "0 0.3em 0 0", height: "0.4em", width: "0.4em", backgroundColor: "white", borderRadius: "50%", fontSize: "1em" } } ></div>

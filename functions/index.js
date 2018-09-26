@@ -270,6 +270,22 @@ app.post('/notifications', (req, res) => {
 
 exports.api = functions.https.onRequest(app)
 
+exports.paymentLogger = functions.firestore.document("payments/{id}").onUpdate((change, context) => {
+	console.log(change.after.data())
+	console.log(change.after)
+
+	const p = change.after.data()
+	return db.collection("logs").doc().set(
+		{ 
+			id: change.after.id, 
+			message: `payment transaction posted with id: ${change.after.id}`, 
+			code: p.payment.messages,
+			created: admin.firestore.Timestamp.now()
+		}
+	)
+		.then(() => null)
+		.catch(e => console.log("payment logger errored"))
+})
 
 exports.mirrorUsers = functions.firestore.document("users/{userId}").onCreate((snap, context) => {
 	// send the user over to an endpoint connected to an SQL database so that they can have local mirroring of their users
@@ -281,12 +297,12 @@ exports.mirrorScores = functions.firestore.document("results/{resultId}").onCrea
 
 
 const logger = message => {
-	pubsub.topic("logging").publisher().publish({ message }).then(() => null).catch(e => console.log("error publishing message", e))
+	// pubsub.topic("logging").publisher().publish({ message }).then(() => null).catch(e => console.log("error publishing message", e))
 }
 
-exports.logging = functions.pubsub.topic("logging").onPublish(message => {
-	return db.collection("transaction_log").doc().set(message.json).then(() => null).catch(e => console.log(e))
-})
+// exports.logging = functions.pubsub.topic("logging").onPublish(message => {
+// 	return db.collection("transaction_log").doc().set(message.json).then(() => null).catch(e => console.log(e))
+// })
 
 
 

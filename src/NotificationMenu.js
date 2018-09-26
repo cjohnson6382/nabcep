@@ -8,6 +8,8 @@ import Auth from './Auth'
 
 import { db } from './utilities'
 
+
+
 const localStyles = {
 	list: { 
 		display: "flex", 
@@ -41,7 +43,7 @@ const localStyles = {
 		background: "transparent",
 		margin: "-0.2rem 0 0 1rem",
 		fontSize: "40%",
-		padding: "0 0.3rem 0 0.3rem"
+		padding: "0.1rem 0.4rem 0 0.4rem"
 	},
 	notificationContainer: {
 		display: "flex",
@@ -99,8 +101,6 @@ export default class NotificationMenu extends React.Component {
 				.collection("notifications").doc(notification.id).set({ read: true }, { merge: true })
 */
 
-			console.log(notification.url)
-
 			this.setState({ notifications })		
 		}
 		catch (e) {
@@ -133,7 +133,7 @@ export default class NotificationMenu extends React.Component {
 					<div style={ { fontSize: "75%", backgroundColor: "grey" } } >
 						<div style={ { color: "white", padding: "1rem" } } >Dummy Notification Menu</div>
 						<div style={ localStyles.list } >{ Object.values(notifications).map(n => 
-							<div style={ localStyles.notification(n.read) } onClick={ () => this.click(n) } key={ n.id } >{ n.message }</div>
+							<Link to={ n.url } style={ localStyles.notification(n.read) } onClick={ () => this.click(n) } key={ n.id } >{ n.message }</Link>
 						) }</div>
 						<div onClick={ this.refresh } >Refresh Notifications</div>
 					</div>

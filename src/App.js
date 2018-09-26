@@ -14,6 +14,7 @@ import Settings from './Settings'
 import ErrorBar from './ErrorBar'
 import Auth from './Auth'
 import CheckRegistration from './CheckRegistration'
+import LogView from './LogView'
 
 import './App.css'
 
@@ -27,11 +28,11 @@ class App extends React.Component {
 					<Header />
 					<ErrorBar />
 					<Route exact path="/" render={ routeProps => <Test title="DASHBOARD" { ...routeProps } /> } />
-					<Authorized exact path="/pay"  auth={ Auth } title="Make a Payment" paymentReturned={ (r) => console.log("paymentReturned:", r) } component={ Pay } />
+					<Authorized exact path="/pay" auth={ Auth } title="Make a Payment" paymentReturned={ (r) => console.log("paymentReturned:", r) } component={ Pay } />
 					<Authorized exact path="/settings" component={ Settings } />
-  					<Route exact path="/login" render={ routeProps => <Login auth={ Auth } { ...routeProps } /> } />
-  					<Route exact path="/register" render={ routeProps => <Register { ...routeProps } /> } />
-  					
+					<Route exact path="/login" render={ routeProps => <Login auth={ Auth } { ...routeProps } /> } />
+					<Route exact path="/register" render={ routeProps => <Register { ...routeProps } /> } />
+  				<Authorized exact path="/logs" component={ LogView } /> 
 					<Footer />
 				</div>
 			</BrowserRouter>

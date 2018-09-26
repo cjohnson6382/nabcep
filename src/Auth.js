@@ -4,6 +4,7 @@ import Error from './Error'
 
 const history = createHistory({ forceRefresh: true })
 
+
 class Auth {
 	constructor () {
 		this.providerLogin = this.providerLogin.bind(this)

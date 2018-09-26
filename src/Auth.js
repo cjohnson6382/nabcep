@@ -113,10 +113,15 @@ export const registerUsername = async name => {
 
 const waitForConnect = () => {
 	return new Promise((resolve, reject) => {
-		let unsubscribe = firebase.auth().onAuthStateChanged(user => {
-			unsubscribe()
-			user ? resolve(user) : reject()
-		})
+		let unsubscribe = firebase.auth().onAuthStateChanged(
+			user => {
+				if (user) {
+					resolve(user)
+					unsubscribe()
+				}
+			},
+			error => reject(error)
+		)
 	})
 }
 

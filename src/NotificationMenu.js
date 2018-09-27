@@ -9,7 +9,6 @@ import Auth from './Auth'
 import { db } from './utilities'
 
 
-
 const localStyles = {
 	list: { 
 		display: "flex", 
@@ -31,7 +30,8 @@ const localStyles = {
 		justifyContent: "center", 
 		backgroundColor: "white", 
 		color: "black",
-		display: s ? "initial" : "none"
+		display: s ? "initial" : "none",
+		zIndex: 3
 	}),
 	counter: {
 		borderRadius: "45%",
@@ -123,6 +123,7 @@ export default class NotificationMenu extends React.Component {
 
 		const unread = Object.values(notifications).filter(n => !n.read)
 
+
 		return (
 			<div style={ { fontSize: "200%", color: "#f8981d", padding: "0 1rem 0 0", cursor: "pointer" } } >
 				<div style={ localStyles.notificationContainer } >
@@ -133,7 +134,7 @@ export default class NotificationMenu extends React.Component {
 					<div style={ { fontSize: "75%", backgroundColor: "grey" } } >
 						<div style={ { color: "white", padding: "1rem" } } >Dummy Notification Menu</div>
 						<div style={ localStyles.list } >{ Object.values(notifications).map(n => 
-							<Link to={ n.url } style={ localStyles.notification(n.read) } onClick={ () => this.click(n) } key={ n.id } >{ n.message }</Link>
+							<Link to={ { pathname: n.url } } style={ localStyles.notification(n.read) } onClick={ () => this.click(n) } key={ n.id } >{ n.message }</Link>
 						) }</div>
 						<div onClick={ this.refresh } >Refresh Notifications</div>
 					</div>

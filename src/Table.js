@@ -74,9 +74,17 @@ export default class Table extends React.Component {
 		let { features } = this.props
 		
 		if (features.pagination) features.pagination = paginationFactory()
+		// the 'if' condition checks for the truthiness of 'pagination'; if it's false but still exists, 
+			// then the table library will attempt to render it
+			// this throws an error, so it should be avoided
+		else delete features.pagination
 		if (features.noDataIndication) features.noDataIndication = () => <EmptyTable />
 		
-		await this.getData(this.props.query)
+		try {
+			await this.setState({ features })
+			await this.getData(this.props.query)			
+		}
+		catch (e) { console.log("something broke while mounting a table: ", e)}
 
 		// let { auth } = this.props
 		// if (auth.sunkaizenUser) {
@@ -138,9 +146,13 @@ export default class Table extends React.Component {
 		return r
 	}
 
+	componentWillUnmount () {
+		this.setState({ data: {} })
+	}
+
 	render () {
-		let { columns = {}, keyField = "", features = {}, title = "", titleStyle = {}, bodyStyle = {} } = this.props
-		let { data = {} } = this.state
+		let { columns = {}, keyField = "", title = "", titleStyle = {}, bodyStyle = {} } = this.props
+		let { data = {}, features = {} } = this.state
 		let tableProps = Object.assign({}, { data, columns, keyField }, features)
 		
 		return (

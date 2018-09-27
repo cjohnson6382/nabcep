@@ -8,7 +8,9 @@ import Error from './Error'
 import { Link } from 'react-router-dom'
 
 
-const Test = ({ title }) => {
+
+
+const Test = ({ title, location, match, history }) => {
 	const formProps = {
 		auth: {},
 		submit: f => {
@@ -180,5 +182,6 @@ const Test = ({ title }) => {
 		</div>
 	)
 }
+
 
 export default Test

@@ -13,8 +13,9 @@
 // 	it will display your string message at the top center of the browser for 10 seconds (or until the user clicks on it) and 
 // 	log the message to the database in an 'errors' collection
 import flashError from './someErrorClass'
-
 import SampleComponent from './SampleComponent'
+
+import { db } from './utilities'
 
 const sampleForm = {
 	"$id": "https://example.com/address.schema.json",
@@ -52,6 +53,7 @@ const sampleForm = {
 
 // the jsondata that we get back from the child has been validated
 // 	we therefore insert it directly into the database
+// 	don't worry about the database insertion code here for now
 const submit = jsondata => {
 	// if the form already has an ID on it, then the user is modifying this application
 	// 	if that is the case, then get a document reference for the existing application
